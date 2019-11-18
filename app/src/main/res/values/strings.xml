@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">WishList</string>
+    <string name="emailO">Email</string>
+    <string name="sign_inO">Sign-In</string>
+    <string name="sign_upO">Sign-Up</string>
+    <string name="autoFillEmail">emailAddress</string>
+    <string name="autofillPasword">password</string>
+    <string name="forgot_passwordO">Forgot Password?</string>
+    <string name="passwordO">Password</string>
+    <string name="emailCorrectionText">Please Enter a correct Email</string>
+    <string name="emailError">Invalid Email</string>
+    <string name="password_Error">Invalid Password</string>
+    <string name="password_Correction">Password length must be 8 or more</string>
+    <string name="auth_failed_try_again">Authentication failed.Please Try Again</string>
+    <string name="passwor_reset_email">Password Reset Email has been sent</string>
+    <string name="forgot_error">Make sure the email is valid and already registered</string>
+    <string name="usersFirebase">Users</string>
+    <string name="confirm_passwordO">Confirm Password</string>
+    <string name="contact_numberO">Contact Number</string>
+    <string name="auto_fill_username">username</string>
+    <string name="Profile_picture">profilePicture</string>
+    <string name="my_content">my content</string>
+    <string name="registerO">Register</string>
+    <string name="username">Username</string>
+    <string name="descriptionO">Description</string>
+    <string name="orphanges_firebase">Orphanages</string>
+    <string name="password_mismatch">Password do not match</string>
+    <string name="password_not_match_warn">Passwords do not match</string>
+    <string name="empty_input_error">It can never be empty</string>
+    <string name="descrption_warning">please enter description of Orphanage</string>
+    <string name="signup_name_warn">please enter name of Orphanage</string>
+    <string name="signup_contact_warning">please enter Full contact number(03xxxxxxxxx)</string>
+    <string name="pending_request">Pending</string>
+    <string name="Pending0">Pending</string>
+    <string name="imageIconNotFound">Please select a image for Orphanage by clicking the image icon first on the screen</string>
+    <string name="registeredSuccessfully">You have registered successfully</string>
+    <string name="orphanagesFirebase">Orphanages</string>
+    <string name="your_admin_email_here">Your admin email here</string>
+    <string name="approveSubject">Approve Request</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="tab_text_1">Tab 1</string>
+    <string name="tab_text_2">Tab 2</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="approved_childO">Approved Child</string>
+    <string name="approved_wishO">Approved Wish</string>
+    <string name="pending_childO">Pending Child</string>
+    <string name="pending_wishO">Pending Wish</string>
+    <string name="wishesFirebaseReference">wishes</string>
+    <string name="network_error">Something Went Wrong</string>
+    <string name="loadDataWait">Loading data. Please wait</string>
+</resources>

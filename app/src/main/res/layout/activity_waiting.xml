@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activities.WaitingActivity">
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Your application for registration has been farworded to administration. Please wait for 7-10 working days. We would get back to you as soon as possible"
+    android:textSize="@dimen/btnTextSize"
+    android:padding="@dimen/editTextPadding"
+    android:layout_margin="@dimen/EditTextMargin"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="You can write us to following email for further Enquiries"
+        android:textSize="@dimen/btnTextSize"
+        android:padding="@dimen/editTextPadding"
+        android:layout_margin="@dimen/EditTextMargin"/>
+    <TextView
+        android:padding="@dimen/editTextPadding"
+        android:layout_margin="@dimen/EditTextMargin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/emailWaiting"
+        android:fontFamily="serif"
+        android:textColor="@color/linkTextColor"
+        android:text="@string/your_admin_email_here"/>
+</LinearLayout>
