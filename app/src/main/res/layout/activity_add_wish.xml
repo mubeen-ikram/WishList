@@ -3,69 +3,54 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    tools:context=".activities.AddWishActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:context=".activities.SignUpActivity">
+        >
 
         <ImageView
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"
-            android:id="@+id/signupProfile"
+            android:id="@+id/addWishPic"
             android:contentDescription="@string/Profile_picture"
             android:foreground="@drawable/profile_pic_back"
             android:scaleType="centerCrop"
-            android:src="@drawable/orphan" />
-        <EditText
-            android:id="@+id/signUpEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/EditTextMargin"
-            android:autofillHints="@string/autoFillEmail"
-            android:background="@drawable/rounded_edit_text"
-            android:hint="@string/emailO"
-            android:inputType="textEmailAddress"
-            android:padding="@dimen/editTextPadding"
-            tools:targetApi="o" />
-
+            android:src="@drawable/ic_add_item" />
 
         <EditText
-            android:id="@+id/signUpPass"
+            android:id="@+id/addWishName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/EditTextMargin"
-            android:autofillHints="@string/autofillPasword"
             android:background="@drawable/rounded_edit_text"
-            android:hint="@string/passwordO"
-            android:inputType="textPassword"
-            android:padding="@dimen/editTextPadding"
-            tools:targetApi="o" />
-
-        <EditText
-            android:id="@+id/signUpConfirmPass"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/EditTextMargin"
-            android:autofillHints="@string/autofillPasword"
-            android:background="@drawable/rounded_edit_text"
-            android:hint="@string/confirm_passwordO"
-            android:inputType="textPassword"
-            android:padding="@dimen/editTextPadding"
-            tools:targetApi="o" />
-        <EditText
-            android:id="@+id/signUpUserName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/EditTextMargin"
-            android:autofillHints="@string/auto_fill_username"
-            android:background="@drawable/rounded_edit_text"
-            android:hint="@string/username"
             android:inputType="textPersonName"
+            android:hint="Wish name"
+            android:padding="@dimen/editTextPadding"
+            tools:targetApi="o" />
+
+
+        <Spinner
+            android:id="@+id/add_wisher_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/EditTextMargin"
+            android:background="@drawable/rounded_edit_text"
+            android:hint="@string/wisher_name"
+            android:padding="@dimen/editTextPadding"
+            tools:targetApi="o" />
+        <EditText
+            android:id="@+id/addWishPrice"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/EditTextMargin"
+            android:background="@drawable/rounded_edit_text"
+            android:hint="@string/price"
+            android:inputType="numberDecimal"
             android:padding="@dimen/editTextPadding"
             tools:targetApi="o" />
         <androidx.core.widget.NestedScrollView
@@ -75,7 +60,7 @@
             android:layout_height="100dp">
 
             <EditText
-                android:id="@+id/signUpDescrpition"
+                android:id="@+id/addWishDescrpition"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/rounded_edit_text"
@@ -86,20 +71,9 @@
                 tools:targetApi="o" />
         </androidx.core.widget.NestedScrollView>
 
-
-        <EditText
-            android:id="@+id/signUpContactInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/EditTextMargin"
-            android:background="@drawable/rounded_edit_text"
-            android:hint="@string/contact_numberO"
-            android:inputType="numberDecimal"
-            android:padding="@dimen/editTextPadding"
-            tools:targetApi="o" />
         <Button
             style="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
-            android:text="@string/registerO"
+            android:text="@string/send_for_approval"
             android:textSize="@dimen/btnTextSize"
             android:textColor="@color/colorText"
             android:id="@+id/approveWishbtn"
@@ -110,4 +84,9 @@
             android:padding="@dimen/editTextPadding"
             />
     </LinearLayout>
+
+
+
+
+
 </ScrollView>

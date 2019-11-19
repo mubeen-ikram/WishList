@@ -14,7 +14,15 @@ public class Wishinformation {
     String wishId;
     String wisherName;
     String date;
+    String description;
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
     public String getDate() {
         return date;

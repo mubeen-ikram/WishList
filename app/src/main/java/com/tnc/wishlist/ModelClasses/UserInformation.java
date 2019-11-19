@@ -4,17 +4,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class UserInformation {
-    String condition;
-    String contactNumber;
-    String description;
-    String email;
-    String name;
-    String orphanageId;
-    String photo;
-    String type;
-    String noOfWishes;
-    HashMap<String,String> wishes;
-    String userId;
+    private String condition;
+    private String contactNumber;
+    private String description;
+    private String email;
+    private String name;
+    private String orphanageId;
+    private String photo;
+    private String type;
+    private String userId;
 
 
     public String getUserId() {
@@ -89,19 +87,4 @@ public class UserInformation {
         this.type = type;
     }
 
-    public String getNoOfWishes() {
-        return noOfWishes;
-    }
-
-    public void setNoOfWishes(String noOfWishes) {
-        this.noOfWishes = noOfWishes;
-    }
-
-    public HashMap<String, String> getWishes() {
-        return wishes;
-    }
-
-    public void setWishes(HashMap<String, String> wishes) {
-        this.wishes = wishes;
-    }
 }

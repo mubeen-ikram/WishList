@@ -1,6 +1,7 @@
 package com.tnc.wishlist.activities;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -14,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,7 +37,9 @@ public class MainActivity extends AppCompatActivity {
     DatabaseReference userReference;
     DatabaseReference wishReference;
     FirebaseAuth mAuth;
-    ProgressDialog progressDialog;
+    FloatingActionButton addChild, addWish;
+    TextView wishText, personText;
+    boolean isOpen = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,16 +47,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
-        DataCentre.userId=mAuth.getUid();
+        DataCentre.userId = mAuth.getUid();
         userReference = database.getReference(getString(R.string.usersFirebase));
         wishReference = database.getReference(getString(R.string.wishesFirebaseReference));
         //Nulling predefined data
-        DataCentre.userInformations = new ArrayList<>();
-        DataCentre.wishinformations = new ArrayList<>();
         DataCentre.orphanAgeHomeInformations = new ArrayList<>();
-        userReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        userReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                DataCentre.userInformations = new ArrayList<>();
                 setWishListner();
                 for (DataSnapshot users : dataSnapshot.getChildren()) {
                     UserInformation user = users.getValue(UserInformation.class);
@@ -72,9 +75,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void setWishListner() {
 
-        wishReference.addListenerForSingleValueEvent(new ValueEventListener() {
+        wishReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                DataCentre.wishinformations = new ArrayList<>();
                 for (DataSnapshot wishes : dataSnapshot.getChildren()) {
                     Wishinformation wish = wishes.getValue(Wishinformation.class);
                     DataCentre.wishinformations.add(wish);
@@ -95,12 +99,46 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(sectionsPagerAdapter);
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
-        FloatingActionButton fab = findViewById(R.id.fab);
+        personText = findViewById(R.id.childText);
+        wishText = findViewById(R.id.wishText);
+        FloatingActionButton fab = findViewById(R.id.fabMain);
+        addChild = findViewById(R.id.fabAddPerson);
+        addWish = findViewById(R.id.fabAddWish);
+        addWish.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(MainActivity.this,AddWishActivity.class);
+                startActivity(intent);
+//                TODO: add wish
+            }
+        });
+        addChild.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent(MainActivity.this,AddChildActivity.class);
+                startActivity(intent);
+                //                TODO: add child
+            }
+        });
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                if (!isOpen) {
+                    personText.setVisibility(View.VISIBLE);
+                    wishText.setVisibility(View.VISIBLE);
+                    addChild.show();
+                    addWish.show();
+                    isOpen=true;
+
+                }
+                else{
+                    personText.setVisibility(View.INVISIBLE);
+                    wishText.setVisibility(View.INVISIBLE);
+                    addChild.hide();
+                    addWish.hide();
+                    isOpen=false;
+
+                }
             }
         });
     }

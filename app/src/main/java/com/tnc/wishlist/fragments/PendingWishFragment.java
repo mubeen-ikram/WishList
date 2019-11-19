@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.tnc.wishlist.ModelClasses.UserInformation;
 import com.tnc.wishlist.ModelClasses.Wishinformation;
 import com.tnc.wishlist.R;
 import com.tnc.wishlist.adapters.WishRecycleViewAdapter;
@@ -48,8 +49,14 @@ public class PendingWishFragment extends Fragment {
         pendingWishes=new ArrayList<>();
         if(DataCentre.wishinformations.size()>0){
             for(Wishinformation cWish:DataCentre.wishinformations){
-                if(cWish.getOrphanId().equals(DataCentre.userId)&&cWish.getCurrentCondition().equals(getString(R.string.Pending0))){
-                    pendingWishes.add(cWish);
+
+                if(cWish.getCurrentCondition().equals(getString(R.string.Pending0))){
+                    for(UserInformation user:DataCentre.userInformations){
+                        if(user.getUserId().equals(cWish.getOrphanId())&&user.getOrphanageId().equals(DataCentre.userId)){
+                            pendingWishes.add(cWish);
+                        }
+
+                    }
                 }
             }
         }

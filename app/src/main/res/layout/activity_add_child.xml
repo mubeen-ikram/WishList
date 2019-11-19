@@ -3,69 +3,45 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    tools:context=".activities.AddChildActivity">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:context=".activities.SignUpActivity">
+        >
 
         <ImageView
             android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_height="90dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"
-            android:id="@+id/signupProfile"
+            android:background="@color/colorSecondary"
+            android:id="@+id/addChildPic"
             android:contentDescription="@string/Profile_picture"
             android:foreground="@drawable/profile_pic_back"
             android:scaleType="centerCrop"
-            android:src="@drawable/orphan" />
-        <EditText
-            android:id="@+id/signUpEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/EditTextMargin"
-            android:autofillHints="@string/autoFillEmail"
-            android:background="@drawable/rounded_edit_text"
-            android:hint="@string/emailO"
-            android:inputType="textEmailAddress"
-            android:padding="@dimen/editTextPadding"
-            tools:targetApi="o" />
-
+            android:src="@drawable/ic_person_add_24dp" />
 
         <EditText
-            android:id="@+id/signUpPass"
+            android:id="@+id/addChildName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/EditTextMargin"
-            android:autofillHints="@string/autofillPasword"
             android:background="@drawable/rounded_edit_text"
-            android:hint="@string/passwordO"
-            android:inputType="textPassword"
-            android:padding="@dimen/editTextPadding"
-            tools:targetApi="o" />
-
-        <EditText
-            android:id="@+id/signUpConfirmPass"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/EditTextMargin"
-            android:autofillHints="@string/autofillPasword"
-            android:background="@drawable/rounded_edit_text"
-            android:hint="@string/confirm_passwordO"
-            android:inputType="textPassword"
-            android:padding="@dimen/editTextPadding"
-            tools:targetApi="o" />
-        <EditText
-            android:id="@+id/signUpUserName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/EditTextMargin"
-            android:autofillHints="@string/auto_fill_username"
-            android:background="@drawable/rounded_edit_text"
-            android:hint="@string/username"
             android:inputType="textPersonName"
+            android:hint="@string/child_name"
+            android:padding="@dimen/editTextPadding"
+            tools:targetApi="o" />
+
+        <EditText
+            android:id="@+id/addChildContact"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/EditTextMargin"
+            android:background="@drawable/rounded_edit_text"
+            android:hint="@string/contact_number"
+            android:inputType="numberDecimal"
             android:padding="@dimen/editTextPadding"
             tools:targetApi="o" />
         <androidx.core.widget.NestedScrollView
@@ -75,7 +51,7 @@
             android:layout_height="100dp">
 
             <EditText
-                android:id="@+id/signUpDescrpition"
+                android:id="@+id/addChildDescrpition"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@drawable/rounded_edit_text"
@@ -86,23 +62,12 @@
                 tools:targetApi="o" />
         </androidx.core.widget.NestedScrollView>
 
-
-        <EditText
-            android:id="@+id/signUpContactInfo"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/EditTextMargin"
-            android:background="@drawable/rounded_edit_text"
-            android:hint="@string/contact_numberO"
-            android:inputType="numberDecimal"
-            android:padding="@dimen/editTextPadding"
-            tools:targetApi="o" />
         <Button
             style="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
-            android:text="@string/registerO"
+            android:text="@string/send_for_approval"
             android:textSize="@dimen/btnTextSize"
             android:textColor="@color/colorText"
-            android:id="@+id/approveWishbtn"
+            android:id="@+id/approveChildBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/EditTextMargin"
@@ -110,4 +75,6 @@
             android:padding="@dimen/editTextPadding"
             />
     </LinearLayout>
+
+
 </ScrollView>

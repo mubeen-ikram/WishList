@@ -50,4 +50,20 @@
     <string name="wishesFirebaseReference">wishes</string>
     <string name="network_error">Something Went Wrong</string>
     <string name="loadDataWait">Loading data. Please wait</string>
+    <string name="addChildO">Add Child</string>
+    <string name="addWishO">Add Wish</string>
+    <string name="wisher_name">Wisher Name</string>
+    <string name="price">Price</string>
+    <string name="send_for_approval">Send For Approval</string>
+    <string name="wishnamenotfound">Please type Name of wish</string>
+    <string name="descriptionnotfound">Please enter description</string>
+    <string name="price_not_found">Please enter Price</string>
+    <string name="wisher_name_not_found">Please Select Wisher Name from dropDown</string>
+    <string name="falses">False</string>
+    <string name="approval_sent">your Wish have been sent for approval</string>
+    <string name="father_name">Father Name</string>
+    <string name="contact_number">Contact number</string>
+    <string name="child_name">Child Name</string>
+    <string name="OrphanO">Orphan</string>
+    <string name="child_sent_for_approval">The child have been sent for approval</string>
 </resources>

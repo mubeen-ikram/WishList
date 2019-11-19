@@ -3,6 +3,7 @@ package com.tnc.wishlist.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -32,6 +33,7 @@ public class SignInActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     FirebaseDatabase database;
     DatabaseReference currentOrphanageRef;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,15 +133,19 @@ public class SignInActivity extends AppCompatActivity {
     private void updateUIAuth(FirebaseUser currentUser) {
         if (currentUser != null) {
             //call database and get its value
+            progressDialog = ProgressDialog.show(SignInActivity.this, "",
+                    "Loading. Please wait...", true);
             currentOrphanageRef.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     OrphanAgeHomeInformation orphanAgeHomeInformation = dataSnapshot.getValue(OrphanAgeHomeInformation.class);
                     if (orphanAgeHomeInformation.getStatus().equals(getString(R.string.Pending0))) {
+                        progressDialog.hide();
                         Intent toWaitActivity = new Intent(SignInActivity.this, WaitingActivity.class);
                         startActivity(toWaitActivity);
                     } else {
                         //TODO:To View screen
+                        progressDialog.hide();
                         Intent toMainActivity = new Intent(SignInActivity.this, MainActivity.class);
                         startActivity(toMainActivity);
                         SignInActivity.this.finish();
@@ -153,6 +159,7 @@ public class SignInActivity extends AppCompatActivity {
             });
 
         } else {
+            progressDialog.hide();
             //continue
         }
     }

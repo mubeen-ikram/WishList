@@ -71,7 +71,7 @@ public class SignUpActivity extends AppCompatActivity {
         eTDescrption = findViewById(R.id.signUpDescrpition);
         eTcontact = findViewById(R.id.signUpContactInfo);
         eTUsername = findViewById(R.id.signUpUserName);
-        btnRegister = findViewById(R.id.registerBtn);
+        btnRegister = findViewById(R.id.approveWishbtn);
         profile = findViewById(R.id.signupProfile);
         database = FirebaseDatabase.getInstance();
         orphanageRef = database.getReference(getString(R.string.orphanges_firebase));
