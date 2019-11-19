@@ -60,7 +60,6 @@ public class PendingChildFragment extends Fragment {
             }
         }
         else{
-//            TODO:Show Error
         }
     }
 

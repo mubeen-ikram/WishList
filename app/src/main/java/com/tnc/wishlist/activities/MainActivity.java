@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent=new Intent(MainActivity.this,AddWishActivity.class);
                 startActivity(intent);
-//                TODO: add wish
             }
         });
         addChild.setOnClickListener(new View.OnClickListener() {
@@ -117,7 +116,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent=new Intent(MainActivity.this,AddChildActivity.class);
                 startActivity(intent);
-                //                TODO: add child
             }
         });
         fab.setOnClickListener(new View.OnClickListener() {

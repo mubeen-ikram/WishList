@@ -144,7 +144,6 @@ public class SignInActivity extends AppCompatActivity {
                         Intent toWaitActivity = new Intent(SignInActivity.this, WaitingActivity.class);
                         startActivity(toWaitActivity);
                     } else {
-                        //TODO:To View screen
                         progressDialog.hide();
                         Intent toMainActivity = new Intent(SignInActivity.this, MainActivity.class);
                         startActivity(toMainActivity);

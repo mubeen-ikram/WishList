@@ -63,7 +63,6 @@ public class ApprovedWishFragment extends Fragment {
             }
         }
         else{
-//            TODO:Show Error
         }
     }
 

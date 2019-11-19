@@ -61,7 +61,6 @@ public class PendingWishFragment extends Fragment {
             }
         }
         else{
-//            TODO:Show Error
         }
     }
 

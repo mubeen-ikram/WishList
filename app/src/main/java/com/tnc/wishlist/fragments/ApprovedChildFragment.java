@@ -62,7 +62,6 @@ public class ApprovedChildFragment extends Fragment {
             }
         }
         else{
-//            TODO:Show Error
         }
     }
 
