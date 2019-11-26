@@ -32,7 +32,7 @@
     <string name="signup_contact_warning">please enter Full contact number(03xxxxxxxxx)</string>
     <string name="pending_request">Pending</string>
     <string name="Pending0">Pending</string>
-    <string name="imageIconNotFound">Please select a image for Orphanage by clicking the image icon first on the screen</string>
+    <string name="imageIconNotFound">Please select a image for Orphanage by clicking the image icon on the screen</string>
     <string name="registeredSuccessfully">You have registered successfully</string>
     <string name="orphanagesFirebase">Orphanages</string>
     <string name="your_admin_email_here">Your admin email here</string>
@@ -69,4 +69,6 @@
     <string name="enter_contact_number">Please Enter Contact Number</string>
     <string name="name_child_missing">Please enter Name of child</string>
     <string name="firebaseChild">child</string>
+    <string name="approvalDetails">Your application for registration has been forwarded to administration. Please wait for 7-10 working days. We would get back to you as soon as possible</string>
+    <string name="emailSelect">You can write us to following email for further Enquiries</string>
 </resources>

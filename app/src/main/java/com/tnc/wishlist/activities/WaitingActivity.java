@@ -6,6 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,13 +49,44 @@ TextView email;
             }
         });
         startDatabaselistner();
-        setToolbar();
+//        setToolbar();
 
     }
     private void setToolbar() {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if(item.getItemId()==R.id.menuSignOut){
+            mAuth.signOut();
+            WaitingActivity.this.finish();
+        }
+        return true;
+    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+
+        // return true so that the menu pop up is opened
+        return true;
+    }
+
+
+
+
+    @Override
+    public boolean onNavigateUp() {
+        onBackPressed();
+        return super.onNavigateUp();
+    }
+
     private void startDatabaselistner() {
         myRef.child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override

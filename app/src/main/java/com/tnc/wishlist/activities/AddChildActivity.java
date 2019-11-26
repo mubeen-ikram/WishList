@@ -38,6 +38,7 @@ import com.tnc.wishlist.R;
 import com.tnc.wishlist.staticClass.DataCentre;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -232,7 +233,8 @@ public class AddChildActivity extends AppCompatActivity {
     private void uploadImage() {
         if (filePath != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading...");
+            progressDialog.setTitle("Please Wait");
+            progressDialog.setCancelable(false);
             progressDialog.show();
 
             StorageReference ref = storageReference.child("ChildImages/" + UUID.randomUUID().toString());
@@ -251,7 +253,7 @@ public class AddChildActivity extends AppCompatActivity {
                             }
                             filePath = uri.getResult();
                             childInformation.setPhoto(filePath.toString());
-                            Toast.makeText(AddChildActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(AddChildActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
                             continueRegistration();
                         }
                     })
@@ -265,9 +267,7 @@ public class AddChildActivity extends AppCompatActivity {
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-                                    .getTotalByteCount());
-                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
+//                            progressDialog.setMessage("please Wait");
 
                         }
                     });
@@ -306,6 +306,10 @@ public class AddChildActivity extends AppCompatActivity {
                 filePath= Uri.fromFile(file);
                 bitmap = MediaStore.Images.Media
                         .getBitmap(AddChildActivity.this.getContentResolver(), Uri.fromFile(file));
+                FileOutputStream outStream = new FileOutputStream(new File(String.valueOf(filePath)));
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream);
+                outStream.flush();
+                outStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

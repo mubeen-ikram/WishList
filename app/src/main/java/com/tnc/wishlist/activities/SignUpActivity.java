@@ -42,6 +42,7 @@ import com.tnc.wishlist.ModelClasses.OrphanAgeHomeInformation;
 import com.tnc.wishlist.R;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -85,8 +86,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     @Override
     public boolean onSupportNavigateUp() {
-        gotoSignInScreen();
-
+        onBackPressed();
         return true;
     }
 
@@ -179,7 +179,6 @@ public class SignUpActivity extends AppCompatActivity {
                 orphanAgeInfo.setDescription(desc);
                 orphanAgeInfo.setEmail(email);
                 orphanAgeInfo.setName(username);
-                orphanAgeInfo.setNoifchildren("0");
                 orphanAgeInfo.setStatus(getString(R.string.Pending0));
                 uploadImage();
             }
@@ -258,7 +257,8 @@ public class SignUpActivity extends AppCompatActivity {
     private void uploadImage() {
         if (filePath != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading...");
+            progressDialog.setTitle("Please Wait");
+            progressDialog.setCancelable(false);
             progressDialog.show();
 
             StorageReference ref = storageReference.child("OrphanageImages/" + UUID.randomUUID().toString());
@@ -278,23 +278,19 @@ public class SignUpActivity extends AppCompatActivity {
                             filePath = uri.getResult();
                             assert filePath != null;
                             orphanAgeInfo.setPhoto(filePath.toString());
-                            Toast.makeText(SignUpActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(SignUpActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
                             continueRegistration();
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            progressDialog.dismiss();
                             Toast.makeText(SignUpActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-                                    .getTotalByteCount());
-                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
 
                         }
                     });
@@ -367,6 +363,11 @@ public class SignUpActivity extends AppCompatActivity {
                 filePath = Uri.fromFile(file);
                 bitmap = MediaStore.Images.Media
                         .getBitmap(SignUpActivity.this.getContentResolver(), Uri.fromFile(file));
+                FileOutputStream outStream = new FileOutputStream(new File(String.valueOf(filePath)));
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream);
+                outStream.flush();
+                outStream.close();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -418,9 +419,6 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void gotoSignInScreen() {
-        Intent signIn = new Intent(SignUpActivity.this, SignInActivity.class);
         this.finish();
-        startActivity(signIn);
-        SignUpActivity.this.finish();
     }
 }

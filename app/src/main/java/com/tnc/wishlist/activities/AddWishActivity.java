@@ -41,6 +41,7 @@ import com.tnc.wishlist.R;
 import com.tnc.wishlist.staticClass.DataCentre;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -208,7 +209,8 @@ public class AddWishActivity extends AppCompatActivity {
     private void uploadImage() {
         if (filePath != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle("Uploading...");
+            progressDialog.setTitle("Please Wait");
+            progressDialog.setCancelable(false);
             progressDialog.show();
 
             StorageReference ref = storageReference.child("WishesImages/" + UUID.randomUUID().toString());
@@ -227,7 +229,7 @@ public class AddWishActivity extends AppCompatActivity {
                             }
                             filePath = uri.getResult();
                             wishinformation.setPhoto(filePath.toString());
-                            Toast.makeText(AddWishActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(AddWishActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
                             continueRegistration();
                         }
                     })
@@ -235,15 +237,13 @@ public class AddWishActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(AddWishActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(AddWishActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onProgress(UploadTask.TaskSnapshot taskSnapshot) {
-                            double progress = (100.0 * taskSnapshot.getBytesTransferred() / taskSnapshot
-                                    .getTotalByteCount());
-                            progressDialog.setMessage("Uploaded " + (int) progress + "%");
+//                            progressDialog.setMessage("Please Wait");
 
                         }
                     });
@@ -326,6 +326,10 @@ public class AddWishActivity extends AppCompatActivity {
                 filePath= Uri.fromFile(file);
                 bitmap = MediaStore.Images.Media
                         .getBitmap(AddWishActivity.this.getContentResolver(), Uri.fromFile(file));
+                FileOutputStream outStream = new FileOutputStream(new File(String.valueOf(filePath)));
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream);
+                outStream.flush();
+                outStream.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }

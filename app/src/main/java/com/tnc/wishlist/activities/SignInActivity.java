@@ -110,7 +110,6 @@ public class SignInActivity extends AppCompatActivity {
     private void gotoSignUp() {
         Intent signUpIntent = new Intent(SignInActivity.this, SignUpActivity.class);
         startActivity(signUpIntent);
-        SignInActivity.this.finish();
     }
 
     View.OnClickListener forgotPassClick = new View.OnClickListener() {
@@ -149,7 +148,7 @@ public class SignInActivity extends AppCompatActivity {
                         progressDialog.dismiss();
                         Intent toWaitActivity = new Intent(SignInActivity.this, WaitingActivity.class);
                         startActivity(toWaitActivity);
-                        SignInActivity.this.finish();
+//                        SignInActivity.this.finish();
                     } else {
                         progressDialog.dismiss();
                         Intent toMainActivity = new Intent(SignInActivity.this, MainActivity.class);

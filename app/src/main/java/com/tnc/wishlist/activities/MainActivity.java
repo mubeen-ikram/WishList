@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
-        if(item.getItemId()==R.id.menuSignUp){
+        if(item.getItemId()==R.id.menuSignOut){
             mAuth.signOut();
             Intent toSignin=new Intent(MainActivity.this,SignInActivity.class);
             startActivity(toSignin);
