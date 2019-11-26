@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tnc.wishlist.ModelClasses.UserInformation;
+import com.tnc.wishlist.ModelClasses.childInformation;
 import com.tnc.wishlist.R;
 import com.tnc.wishlist.adapters.ChildRecycleViewAdapter;
 import com.tnc.wishlist.staticClass.DataCentre;
@@ -23,7 +23,7 @@ public class PendingChildFragment extends Fragment {
     ChildRecycleViewAdapter childRecycleViewAdapter;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-    ArrayList<UserInformation> totalPendingUser;
+    ArrayList<childInformation> totalPendingUser;
 
 
     public PendingChildFragment() {
@@ -52,8 +52,8 @@ public class PendingChildFragment extends Fragment {
 
     private void setValues() {
         totalPendingUser =new ArrayList<>();
-        if(DataCentre.userInformations.size()>0){
-            for(UserInformation cUser:DataCentre.userInformations){
+        if(DataCentre.childInformations.size()>0){
+            for(childInformation cUser:DataCentre.childInformations){
                 if(cUser.getOrphanageId().equals(DataCentre.userId)&&cUser.getCondition().equals(getString(R.string.Pending0))){
                     totalPendingUser.add(cUser);
                 }

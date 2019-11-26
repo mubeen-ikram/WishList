@@ -3,18 +3,18 @@ package com.tnc.wishlist.ModelClasses;
 import java.util.HashMap;
 
 public class Wishinformation {
-    String currentCondition;
-    HashMap<String,String> donar;
-    String name;
-    String orphanId;
-    String photo;
-    String price;
-    String pricePayed;
-    String requirnment;
-    String wishId;
-    String wisherName;
-    String date;
-    String description;
+    private String currentCondition;
+    private HashMap<String,String> donor;
+    private String name;
+    private String orphanId;
+    private String photo;
+    private String price;
+    private String pricePayed;
+    private String requirnment;
+    private String wishId;
+    private String wisherName;
+    private String date;
+    private String description;
 
     public String getDescription() {
         return description;
@@ -48,12 +48,12 @@ public class Wishinformation {
         this.currentCondition = currentCondition;
     }
 
-    public HashMap<String, String> getDonar() {
-        return donar;
+    public HashMap<String, String> getDonor() {
+        return donor;
     }
 
-    public void setDonar(HashMap<String, String> donar) {
-        this.donar = donar;
+    public void setDonor(HashMap<String, String> donor) {
+        this.donor = donor;
     }
 
     public String getName() {

@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.tnc.wishlist.ModelClasses.UserInformation;
+import com.tnc.wishlist.ModelClasses.childInformation;
 import com.tnc.wishlist.R;
 
 import java.util.ArrayList;
@@ -21,9 +21,9 @@ import java.util.ArrayList;
 public class ChildRecycleViewAdapter extends RecyclerView.Adapter<ChildRecycleViewAdapter.MyViewHolder> {
     private Context context;
     private int resources;
-    private ArrayList<UserInformation> childData;
+    private ArrayList<childInformation> childData;
 
-    public ChildRecycleViewAdapter(Context context, int resources, ArrayList<UserInformation> childData) {
+    public ChildRecycleViewAdapter(Context context, int resources, ArrayList<childInformation> childData) {
         this.context = context;
         this.resources = resources;
         this.childData = childData;
@@ -38,7 +38,7 @@ public class ChildRecycleViewAdapter extends RecyclerView.Adapter<ChildRecycleVi
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        UserInformation currentChild=childData.get(position);
+        childInformation currentChild=childData.get(position);
         Glide.with(context).load(currentChild.getPhoto()).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.profile_icon).into(holder.childProfile);
         holder.childName.setText(currentChild.getName());
         holder.myLinear.setOnClickListener(new View.OnClickListener() {

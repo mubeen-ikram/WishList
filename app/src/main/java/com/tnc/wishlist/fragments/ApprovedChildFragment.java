@@ -1,7 +1,5 @@
 package com.tnc.wishlist.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,9 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.tnc.wishlist.ModelClasses.UserInformation;
+import com.tnc.wishlist.ModelClasses.childInformation;
 import com.tnc.wishlist.R;
 import com.tnc.wishlist.adapters.ChildRecycleViewAdapter;
 import com.tnc.wishlist.staticClass.DataCentre;
@@ -25,7 +21,7 @@ public class ApprovedChildFragment extends Fragment {
     ChildRecycleViewAdapter childRecycleViewAdapter;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-    ArrayList<UserInformation> totalApprovedUser;
+    ArrayList<childInformation> totalApprovedUser;
     public ApprovedChildFragment() {
         // Required empty public constructor
     }
@@ -54,8 +50,8 @@ public class ApprovedChildFragment extends Fragment {
 
     private void setValues() {
         totalApprovedUser=new ArrayList<>();
-        if(DataCentre.userInformations.size()>0){
-            for(UserInformation cUser:DataCentre.userInformations){
+        if(DataCentre.childInformations.size()>0){
+            for(childInformation cUser:DataCentre.childInformations){
                 if(cUser.getOrphanageId().equals(DataCentre.userId)&&!cUser.getCondition().equals(getString(R.string.Pending0))){
                     totalApprovedUser.add(cUser);
                 }

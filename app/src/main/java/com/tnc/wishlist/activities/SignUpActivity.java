@@ -3,14 +3,19 @@ package com.tnc.wishlist.activities;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.Patterns;
@@ -36,7 +41,10 @@ import com.google.firebase.storage.UploadTask;
 import com.tnc.wishlist.ModelClasses.OrphanAgeHomeInformation;
 import com.tnc.wishlist.R;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 import static java.lang.Thread.sleep;
@@ -50,17 +58,36 @@ public class SignUpActivity extends AppCompatActivity {
     DatabaseReference orphanageRef;
     OrphanAgeHomeInformation orphanAgeInfo;
     StorageReference storageReference;
-    Uri filePath;
+    Uri filePath, fileUri;
+
     //Permission Variables
 
     private static final int PERMISSION_REQUEST_CODE = 1;
     private int PICK_IMAGE_REQUEST = 1;
+    private int CAMERA_REQUEST = 1040;
+
+    //    For Camera save to file
+    String mCurrentPhotoPath;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         initializeVariable();
+        setToolbar();
+    }
+
+    private void setToolbar() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        gotoSignInScreen();
+
+        return true;
     }
 
     private void initializeVariable() {
@@ -93,7 +120,7 @@ public class SignUpActivity extends AppCompatActivity {
         profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                askPermissionForStorage();
+                workOnProgileClick();
             }
         });
 
@@ -149,7 +176,7 @@ public class SignUpActivity extends AppCompatActivity {
                     return;
                 }
                 orphanAgeInfo.setContactNumber(contact);
-                orphanAgeInfo.setDescrpition(desc);
+                orphanAgeInfo.setDescription(desc);
                 orphanAgeInfo.setEmail(email);
                 orphanAgeInfo.setName(username);
                 orphanAgeInfo.setNoifchildren("0");
@@ -157,6 +184,75 @@ public class SignUpActivity extends AppCompatActivity {
                 uploadImage();
             }
         });
+    }
+
+    private void workOnProgileClick() {
+        AlertDialog.Builder builder =
+                new AlertDialog.Builder(SignUpActivity.this);
+        builder.setTitle("Take Picture");
+        builder.setMessage("Select the picture From");
+
+        builder.setPositiveButton("Camera", new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        askPermissionForCamera();
+                    }
+                });
+        builder.setNegativeButton("Gallery", new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        askPermissionForStorage();
+                        ;//
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
+    private void askPermissionForCamera() {
+        if (ActivityCompat.checkSelfPermission(SignUpActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(SignUpActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
+        } else {
+            callForCamera();
+        }
+
+    }
+
+    private void callForCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File photoFile = null;
+        try {
+            photoFile = createImageFile();
+        } catch (IOException ex) {
+            // Error occurred while creating the File
+        }
+        // Continue only if the File was successfully created
+        if (photoFile != null) {
+            Uri photoURI = FileProvider.getUriForFile(this,
+                    "com.tnc.wishlist.fileprovider",
+                    photoFile);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(intent, CAMERA_REQUEST);
+        }
+    }
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
     }
 
     private void uploadImage() {
@@ -180,6 +276,7 @@ public class SignUpActivity extends AppCompatActivity {
                                 }
                             }
                             filePath = uri.getResult();
+                            assert filePath != null;
                             orphanAgeInfo.setPhoto(filePath.toString());
                             Toast.makeText(SignUpActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
                             continueRegistration();
@@ -224,8 +321,18 @@ public class SignUpActivity extends AppCompatActivity {
                 Toast.makeText(this, "Storage permission denied.Please allow app to use Storage", Toast.LENGTH_LONG).show();
 
             }
+        } else if (requestCode == CAMERA_REQUEST) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Storage permission granted", Toast.LENGTH_LONG).show();
+                callForCamera();
+
+            } else {
+                Toast.makeText(this, "Storage permission denied.Please allow app to use Storage", Toast.LENGTH_LONG).show();
+
+            }
         }
     }
+
 
     private void openStorageApp() {
         Intent intent = new Intent();
@@ -251,7 +358,23 @@ public class SignUpActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        } else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK) {
+
+//            filePath = data.getData();
+            File file = new File(mCurrentPhotoPath);
+            Bitmap bitmap = null;
+            try {
+                filePath = Uri.fromFile(file);
+                bitmap = MediaStore.Images.Media
+                        .getBitmap(SignUpActivity.this.getContentResolver(), Uri.fromFile(file));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (bitmap != null) {
+                profile.setImageBitmap(bitmap);
+            }
         }
+
     }
 
     private void continueRegistration() {
@@ -281,6 +404,7 @@ public class SignUpActivity extends AppCompatActivity {
                 });
     }
 
+
     private void updateUI(FirebaseUser user) {
         if (user != null) {
             String key = user.getUid();
@@ -297,5 +421,6 @@ public class SignUpActivity extends AppCompatActivity {
         Intent signIn = new Intent(SignUpActivity.this, SignInActivity.class);
         this.finish();
         startActivity(signIn);
+        SignUpActivity.this.finish();
     }
 }

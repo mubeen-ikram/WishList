@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.tnc.wishlist.ModelClasses.UserInformation;
 import com.tnc.wishlist.ModelClasses.Wishinformation;
 import com.tnc.wishlist.R;
 

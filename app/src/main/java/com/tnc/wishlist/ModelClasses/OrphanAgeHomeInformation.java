@@ -2,11 +2,10 @@ package com.tnc.wishlist.ModelClasses;
 
 public class OrphanAgeHomeInformation {
     String contactNumber;
-    String descrpition;
+    String description;
     String email;
     String location;
     String name;
-    String noifchildren;
     String orphanageId;
     String photo;
     String status;
@@ -27,12 +26,12 @@ public class OrphanAgeHomeInformation {
         this.contactNumber = contactNumber;
     }
 
-    public String getDescrpition() {
-        return descrpition;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescrpition(String descrpition) {
-        this.descrpition = descrpition;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public String getEmail() {
@@ -59,13 +58,6 @@ public class OrphanAgeHomeInformation {
         this.name = name;
     }
 
-    public String getNoifchildren() {
-        return noifchildren;
-    }
-
-    public void setNoifchildren(String noifchildren) {
-        this.noifchildren = noifchildren;
-    }
 
     public String getOrphanageId() {
         return orphanageId;

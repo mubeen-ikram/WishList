@@ -3,14 +3,19 @@ package com.tnc.wishlist.activities;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -18,7 +23,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -31,12 +35,14 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.tnc.wishlist.ModelClasses.UserInformation;
+import com.tnc.wishlist.ModelClasses.childInformation;
 import com.tnc.wishlist.ModelClasses.Wishinformation;
 import com.tnc.wishlist.R;
 import com.tnc.wishlist.staticClass.DataCentre;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -52,11 +58,13 @@ public class AddWishActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     DatabaseReference wishReference;
     Uri filePath;
+    String mCurrentPhotoPath;
     Wishinformation wishinformation;
     StorageReference storageReference;
 
     private static final int PERMISSION_REQUEST_CODE = 1;
     private int PICK_IMAGE_REQUEST = 1;
+    private int CAMERA_REQUEST=1001;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,12 +72,23 @@ public class AddWishActivity extends AppCompatActivity {
         initializeVariable();
         populateSpinner();
         setOnClicklistner();
+        setToolbar();
     }
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+    private void setToolbar() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
     private void setOnClicklistner() {
         wishPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                askPermissionForStorage();
+                WorkOnWishPic();
             }
         });
         approveButton.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +122,7 @@ public class AddWishActivity extends AppCompatActivity {
                 wishinformation.setDate(new Date().toString());
                 wishinformation.setDescription(wishDescription.getText().toString());
                 wishinformation.setName(wishName.getText().toString());
-                for(UserInformation user:DataCentre.userInformations){
+                for(childInformation user:DataCentre.childInformations){
                     if(user.getName().equals(wisherName.getSelectedItem().toString())){
                         wishinformation.setOrphanId(user.getUserId());
                         break;
@@ -117,6 +136,75 @@ public class AddWishActivity extends AppCompatActivity {
         });
 
     }
+
+    private void WorkOnWishPic() {
+        AlertDialog.Builder builder =
+                new AlertDialog.Builder(AddWishActivity.this);
+        builder.setTitle("Take Picture");
+        builder.setMessage("Select the picture From");
+
+        builder.setPositiveButton("Camera", new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        askPermissionForCamera();
+                    }
+                });
+        builder.setNegativeButton("Gallery", new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        askPermissionForStorage();
+                        ;//
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    private void askPermissionForCamera() {
+        if(ActivityCompat.checkSelfPermission(AddWishActivity.this,Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(AddWishActivity.this,new String[]{Manifest.permission.CAMERA},CAMERA_REQUEST);
+        }
+        else{
+            callForCamera();
+        }
+
+    }
+
+    private void callForCamera() {
+        Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File photoFile = null;
+        try {
+            photoFile = createImageFile();
+        } catch (IOException ex) {
+            // Error occurred while creating the File
+        }
+        // Continue only if the File was successfully created
+        if (photoFile != null) {
+            Uri photoURI = FileProvider.getUriForFile(this,
+                    "com.tnc.wishlist.fileprovider",
+                    photoFile);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(intent, CAMERA_REQUEST);
+        }
+    }
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+
     private void uploadImage() {
         if (filePath != null) {
             final ProgressDialog progressDialog = new ProgressDialog(this);
@@ -172,9 +260,9 @@ public class AddWishActivity extends AppCompatActivity {
     }
     private void populateSpinner() {
         ArrayList<String> childName=new ArrayList<>();
-        for(UserInformation userInformation: DataCentre.userInformations){
-            if(userInformation.getOrphanageId().equals(mAuth.getUid())&&!userInformation.getCondition().equals(getString(R.string.Pending0))){
-                childName.add(userInformation.getName());
+        for(childInformation childInformation : DataCentre.childInformations){
+            if(childInformation.getOrphanageId().equals(mAuth.getUid())&&!childInformation.getCondition().equals(getString(R.string.Pending0))){
+                childName.add(childInformation.getName());
             }
         }
         ArrayAdapter<String> childNameAdpater =  new ArrayAdapter<String>(this,
@@ -225,6 +313,24 @@ public class AddWishActivity extends AppCompatActivity {
                 wishPic.setImageBitmap(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
+            }
+        }
+
+
+        else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK ) {
+
+//            filePath = data.getData();
+            File file = new File(mCurrentPhotoPath);
+            Bitmap bitmap = null;
+            try {
+                filePath= Uri.fromFile(file);
+                bitmap = MediaStore.Images.Media
+                        .getBitmap(AddWishActivity.this.getContentResolver(), Uri.fromFile(file));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (bitmap != null) {
+                wishPic.setImageBitmap(bitmap);
             }
         }
     }

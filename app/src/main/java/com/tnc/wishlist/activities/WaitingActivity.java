@@ -46,8 +46,13 @@ TextView email;
             }
         });
         startDatabaselistner();
-    }
+        setToolbar();
 
+    }
+    private void setToolbar() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
     private void startDatabaselistner() {
         myRef.child(mAuth.getCurrentUser().getUid()).addValueEventListener(new ValueEventListener() {
             @Override
@@ -58,6 +63,7 @@ TextView email;
                     Toast.makeText(WaitingActivity.this,"Your request have been approved",Toast.LENGTH_LONG).show();
                     Intent toMainActivity = new Intent(WaitingActivity.this, MainActivity.class);
                     startActivity(toMainActivity);
+                    WaitingActivity.this.finish();
                 }
             }
 

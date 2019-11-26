@@ -24,7 +24,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.tnc.wishlist.ModelClasses.OrphanAgeHomeInformation;
-import com.tnc.wishlist.ModelClasses.UserInformation;
 import com.tnc.wishlist.R;
 
 public class SignInActivity extends AppCompatActivity {
@@ -47,6 +46,8 @@ public class SignInActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        progressDialog = ProgressDialog.show(SignInActivity.this, "",
+                "Loading. Please wait...", true);
         updateUIAuth(currentUser);
         setClickListners();
     }
@@ -78,6 +79,8 @@ public class SignInActivity extends AppCompatActivity {
                 signInPass.setError(getString(R.string.password_Error));
                 return;
             }
+
+            progressDialog.show();
             //Signin user from firebase
             mAuth.signInWithEmailAndPassword(email, pass)
                     .addOnCompleteListener(SignInActivity.this, new OnCompleteListener<AuthResult>() {
@@ -97,14 +100,19 @@ public class SignInActivity extends AppCompatActivity {
                     });
         }
     };
-
     View.OnClickListener signupClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            Intent signUpIntent = new Intent(SignInActivity.this, SignUpActivity.class);
-            startActivity(signUpIntent);
+            gotoSignUp();
         }
     };
+
+    private void gotoSignUp() {
+        Intent signUpIntent = new Intent(SignInActivity.this, SignUpActivity.class);
+        startActivity(signUpIntent);
+        SignInActivity.this.finish();
+    }
+
     View.OnClickListener forgotPassClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -133,18 +141,17 @@ public class SignInActivity extends AppCompatActivity {
     private void updateUIAuth(FirebaseUser currentUser) {
         if (currentUser != null) {
             //call database and get its value
-            progressDialog = ProgressDialog.show(SignInActivity.this, "",
-                    "Loading. Please wait...", true);
             currentOrphanageRef.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     OrphanAgeHomeInformation orphanAgeHomeInformation = dataSnapshot.getValue(OrphanAgeHomeInformation.class);
                     if (orphanAgeHomeInformation.getStatus().equals(getString(R.string.Pending0))) {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Intent toWaitActivity = new Intent(SignInActivity.this, WaitingActivity.class);
                         startActivity(toWaitActivity);
+                        SignInActivity.this.finish();
                     } else {
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Intent toMainActivity = new Intent(SignInActivity.this, MainActivity.class);
                         startActivity(toMainActivity);
                         SignInActivity.this.finish();
@@ -158,8 +165,8 @@ public class SignInActivity extends AppCompatActivity {
             });
 
         } else {
-            progressDialog.hide();
-            //continue
+                progressDialog.dismiss();
+            //continue.com
         }
     }
 

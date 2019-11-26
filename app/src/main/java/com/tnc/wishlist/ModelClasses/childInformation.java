@@ -3,7 +3,7 @@ package com.tnc.wishlist.ModelClasses;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class UserInformation {
+public class childInformation {
     private String condition;
     private String contactNumber;
     private String description;
@@ -13,6 +13,9 @@ public class UserInformation {
     private String photo;
     private String type;
     private String userId;
+    String age;
+    String ethnicity;
+    String priority;
 
 
     public String getUserId() {

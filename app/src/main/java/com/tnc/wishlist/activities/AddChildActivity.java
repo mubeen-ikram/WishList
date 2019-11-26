@@ -3,14 +3,19 @@ package com.tnc.wishlist.activities;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
@@ -28,12 +33,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.tnc.wishlist.ModelClasses.UserInformation;
-import com.tnc.wishlist.ModelClasses.Wishinformation;
+import com.tnc.wishlist.ModelClasses.childInformation;
 import com.tnc.wishlist.R;
 import com.tnc.wishlist.staticClass.DataCentre;
 
+import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.UUID;
 
@@ -47,11 +53,13 @@ public class AddChildActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     DatabaseReference childReference;
     Uri filePath;
-    UserInformation userInformation;
+    childInformation childInformation;
+    String mCurrentPhotoPath;
     StorageReference storageReference;
 
     private static final int PERMISSION_REQUEST_CODE = 1;
     private int PICK_IMAGE_REQUEST = 1;
+    private int CAMERA_REQUEST=1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +67,31 @@ public class AddChildActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_child);
         initializeVariable();
         setOnclickListner();
+        setToolbar();
+    }
+
+    private void setToolbar() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
     }
 
     private void setOnclickListner() {
         childPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                askPermissionForStorage();
+                workOnChildPic();
             }
         });
         sendForApprovebutton.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +102,7 @@ public class AddChildActivity extends AppCompatActivity {
                     return;
                 }
                 if(childName.getText().toString().length()<1){
-                    Toast.makeText(AddChildActivity.this, R.string.wishnamenotfound, Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddChildActivity.this, R.string.name_child_missing, Toast.LENGTH_LONG).show();
 
                     childName.setError(getString(R.string.empty_input_error));
                     return;
@@ -87,22 +113,94 @@ public class AddChildActivity extends AppCompatActivity {
                     return;
                 }
                 if(childContact.getText().toString().length()<1){
-                    Toast.makeText(AddChildActivity.this, R.string.price_not_found, Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddChildActivity.this, R.string.enter_contact_number, Toast.LENGTH_LONG).show();
                     childContact.setError(getString(R.string.empty_input_error));
                     return;
                 }
-                userInformation.setCondition(getString(R.string.Pending0));
-                userInformation.setContactNumber(childContact.getText().toString());
-                userInformation.setDescription(childDescription.getText().toString());
-                userInformation.setName(childName.getText().toString());
-                userInformation.setOrphanageId(mAuth.getUid());
-                userInformation.setType(getString(R.string.OrphanO));
+                childInformation.setCondition(getString(R.string.Pending0));
+                childInformation.setContactNumber(childContact.getText().toString());
+                childInformation.setDescription(childDescription.getText().toString());
+                childInformation.setName(childName.getText().toString());
+                childInformation.setOrphanageId(mAuth.getUid());
+                childInformation.setType(getString(R.string.OrphanO));
                 uploadImage();
 
             }
         });
 
     }
+
+    private void workOnChildPic() {
+        AlertDialog.Builder builder =
+                new AlertDialog.Builder(AddChildActivity.this);
+        builder.setTitle("Take Picture");
+        builder.setMessage("Select the picture From");
+
+        builder.setPositiveButton("Camera", new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        askPermissionForCamera();
+                    }
+                });
+        builder.setNegativeButton("Gallery", new
+                DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        askPermissionForStorage();
+                        ;//
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void askPermissionForCamera() {
+        if(ActivityCompat.checkSelfPermission(AddChildActivity.this,Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED){
+            ActivityCompat.requestPermissions(AddChildActivity.this,new String[]{Manifest.permission.CAMERA},CAMERA_REQUEST);
+        }
+        else{
+            callForCamera();
+        }
+
+    }
+
+
+    private void callForCamera() {
+        Intent intent=new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File photoFile = null;
+        try {
+            photoFile = createImageFile();
+        } catch (IOException ex) {
+            // Error occurred while creating the File
+        }
+        // Continue only if the File was successfully created
+        if (photoFile != null) {
+            Uri photoURI = FileProvider.getUriForFile(this,
+                    "com.tnc.wishlist.fileprovider",
+                    photoFile);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            startActivityForResult(intent, CAMERA_REQUEST);
+        }
+    }
+
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
     private void askPermissionForStorage() {
         if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
             requestPermissions(new String[]{Manifest.permission.CAMERA}, PERMISSION_REQUEST_CODE);
@@ -119,8 +217,8 @@ public class AddChildActivity extends AppCompatActivity {
         childPic=findViewById(R.id.addChildPic);
         database=FirebaseDatabase.getInstance();
         mAuth=FirebaseAuth.getInstance();
-        childReference=database.getReference(getString(R.string.usersFirebase));
-        userInformation=new UserInformation();
+        childReference=database.getReference(getString(R.string.firebaseChild));
+        childInformation =new childInformation();
         storageReference= FirebaseStorage.getInstance().getReference();
     }
     private void openStorageApp() {
@@ -137,7 +235,7 @@ public class AddChildActivity extends AppCompatActivity {
             progressDialog.setTitle("Uploading...");
             progressDialog.show();
 
-            StorageReference ref = storageReference.child("UsersImages/" + UUID.randomUUID().toString());
+            StorageReference ref = storageReference.child("ChildImages/" + UUID.randomUUID().toString());
             ref.putFile(filePath)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -152,7 +250,7 @@ public class AddChildActivity extends AppCompatActivity {
                                 }
                             }
                             filePath = uri.getResult();
-                            userInformation.setPhoto(filePath.toString());
+                            childInformation.setPhoto(filePath.toString());
                             Toast.makeText(AddChildActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
                             continueRegistration();
                         }
@@ -178,11 +276,11 @@ public class AddChildActivity extends AppCompatActivity {
     private void continueRegistration() {
         childReference=childReference.push();
         String key=childReference.getKey();
-        userInformation.setUserId(key);
-        childReference.setValue(userInformation);
+        childInformation.setUserId(key);
+        childReference.setValue(childInformation);
         Toast.makeText(AddChildActivity.this, R.string.child_sent_for_approval, Toast.LENGTH_LONG).show();
-        DataCentre.userInformations.add(userInformation);
-        this.finish();
+        DataCentre.childInformations.add(childInformation);
+
     }
 
     @Override
@@ -199,6 +297,22 @@ public class AddChildActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
+        else if (requestCode == CAMERA_REQUEST && resultCode == RESULT_OK ) {
+
+//            filePath = data.getData();
+            File file = new File(mCurrentPhotoPath);
+            Bitmap bitmap = null;
+            try {
+                filePath= Uri.fromFile(file);
+                bitmap = MediaStore.Images.Media
+                        .getBitmap(AddChildActivity.this.getContentResolver(), Uri.fromFile(file));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (bitmap != null) {
+                childPic.setImageBitmap(bitmap);
+            }
+        }
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -210,6 +324,16 @@ public class AddChildActivity extends AppCompatActivity {
 
             } else {
 //                Toast.makeText(this, "Storage permission denied.Please allow app to use Storage", Toast.LENGTH_LONG).show();
+
+            }
+        }
+        else if (requestCode == CAMERA_REQUEST) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Storage permission granted", Toast.LENGTH_LONG).show();
+                callForCamera();
+
+            } else {
+                Toast.makeText(this, "Storage permission denied.Please allow app to use Storage", Toast.LENGTH_LONG).show();
 
             }
         }

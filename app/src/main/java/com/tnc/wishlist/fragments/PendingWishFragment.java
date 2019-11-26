@@ -11,7 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tnc.wishlist.ModelClasses.UserInformation;
+import com.tnc.wishlist.ModelClasses.childInformation;
 import com.tnc.wishlist.ModelClasses.Wishinformation;
 import com.tnc.wishlist.R;
 import com.tnc.wishlist.adapters.WishRecycleViewAdapter;
@@ -51,7 +51,7 @@ public class PendingWishFragment extends Fragment {
             for(Wishinformation cWish:DataCentre.wishinformations){
 
                 if(cWish.getCurrentCondition().equals(getString(R.string.Pending0))){
-                    for(UserInformation user:DataCentre.userInformations){
+                    for(childInformation user:DataCentre.childInformations){
                         if(user.getUserId().equals(cWish.getOrphanId())&&user.getOrphanageId().equals(DataCentre.userId)){
                             pendingWishes.add(cWish);
                         }

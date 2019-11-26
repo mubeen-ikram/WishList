@@ -66,4 +66,7 @@
     <string name="child_name">Child Name</string>
     <string name="OrphanO">Orphan</string>
     <string name="child_sent_for_approval">The child have been sent for approval</string>
+    <string name="enter_contact_number">Please Enter Contact Number</string>
+    <string name="name_child_missing">Please enter Name of child</string>
+    <string name="firebaseChild">child</string>
 </resources>

@@ -1,18 +1,18 @@
 package com.tnc.wishlist.activities;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -24,7 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.tnc.wishlist.ModelClasses.UserInformation;
+import com.tnc.wishlist.ModelClasses.childInformation;
 import com.tnc.wishlist.ModelClasses.Wishinformation;
 import com.tnc.wishlist.R;
 import com.tnc.wishlist.activities.ui.main.SectionsPagerAdapter;
@@ -34,7 +34,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
     FirebaseDatabase database;
-    DatabaseReference userReference;
+    DatabaseReference childReference;
     DatabaseReference wishReference;
     FirebaseAuth mAuth;
     FloatingActionButton addChild, addWish;
@@ -48,18 +48,18 @@ public class MainActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         mAuth = FirebaseAuth.getInstance();
         DataCentre.userId = mAuth.getUid();
-        userReference = database.getReference(getString(R.string.usersFirebase));
+        childReference = database.getReference(getString(R.string.firebaseChild));
         wishReference = database.getReference(getString(R.string.wishesFirebaseReference));
         //Nulling predefined data
         DataCentre.orphanAgeHomeInformations = new ArrayList<>();
-        userReference.addValueEventListener(new ValueEventListener() {
+        childReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                DataCentre.userInformations = new ArrayList<>();
+                DataCentre.childInformations = new ArrayList<>();
                 setWishListner();
                 for (DataSnapshot users : dataSnapshot.getChildren()) {
-                    UserInformation user = users.getValue(UserInformation.class);
-                    DataCentre.userInformations.add(user);
+                    childInformation user = users.getValue(childInformation.class);
+                    DataCentre.childInformations.add(user);
                 }
             }
 
@@ -69,9 +69,47 @@ public class MainActivity extends AppCompatActivity {
                 ;
             }
         });
-
-
+        setToolbar();
     }
+    private void setToolbar() {
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        myToolbar.setTitle(getString(R.string.app_name));
+        setSupportActionBar(myToolbar);
+//        getActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setDisplayShowHomeEnabled(true);
+//        getActionBar().setDisplayShowHomeEnabled(true);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finish();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_menu, menu);
+
+        // return true so that the menu pop up is opened
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        if(item.getItemId()==R.id.menuSignUp){
+            mAuth.signOut();
+            Intent toSignin=new Intent(MainActivity.this,SignInActivity.class);
+            startActivity(toSignin);
+            MainActivity.this.finish();
+        }
+        return true;
+    }
+
+
 
     private void setWishListner() {
 

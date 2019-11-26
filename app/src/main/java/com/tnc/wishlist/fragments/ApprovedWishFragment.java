@@ -1,7 +1,5 @@
 package com.tnc.wishlist.fragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -12,10 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tnc.wishlist.ModelClasses.UserInformation;
+import com.tnc.wishlist.ModelClasses.childInformation;
 import com.tnc.wishlist.ModelClasses.Wishinformation;
 import com.tnc.wishlist.R;
-import com.tnc.wishlist.adapters.ChildRecycleViewAdapter;
 import com.tnc.wishlist.adapters.WishRecycleViewAdapter;
 import com.tnc.wishlist.staticClass.DataCentre;
 
@@ -53,7 +50,7 @@ public class ApprovedWishFragment extends Fragment {
         if(DataCentre.wishinformations.size()>0){
             for(Wishinformation cWish:DataCentre.wishinformations){
                 if(!cWish.getCurrentCondition().equals(getString(R.string.Pending0))){
-                    for(UserInformation user:DataCentre.userInformations){
+                    for(childInformation user:DataCentre.childInformations){
                         if(user.getUserId().equals(cWish.getOrphanId())&&user.getOrphanageId().equals(DataCentre.userId)){
                             approvedWishes.add(cWish);
                         }
