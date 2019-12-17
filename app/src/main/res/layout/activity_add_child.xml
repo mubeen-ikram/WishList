@@ -34,6 +34,17 @@
             android:padding="@dimen/editTextPadding"
             tools:targetApi="o" />
 
+        <Spinner
+            android:id="@+id/add_child_orphanAge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/EditTextMargin"
+            android:background="@drawable/rounded_edit_text"
+            android:hint="@string/orphanage_name"
+            android:padding="@dimen/editTextPadding"
+            android:visibility="gone"
+            tools:targetApi="o" />
+
         <EditText
             android:id="@+id/addChildContact"
             android:layout_width="match_parent"
@@ -61,7 +72,27 @@
                 android:gravity="top|left"
                 tools:targetApi="o" />
         </androidx.core.widget.NestedScrollView>
+        <EditText
+            android:inputType="date"
+            android:background="@drawable/rounded_edit_text"
+            android:id="@+id/addChildBirthdate"
+            android:layout_width="match_parent"
+            android:hint="@string/enter_birthday_date"
+            android:focusable="false"
+            android:layout_margin="@dimen/EditTextMargin"
+            android:padding="@dimen/editTextPadding"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp" />
 
+        <Spinner
+            android:id="@+id/add_child_ethnicity_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/EditTextMargin"
+            android:background="@drawable/rounded_edit_text"
+            android:hint="@string/child_ethnicity"
+            android:padding="@dimen/editTextPadding"
+            tools:targetApi="o" />
         <Button
             style="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
             android:text="@string/send_for_approval"

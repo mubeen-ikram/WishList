@@ -13,9 +13,24 @@ public class childInformation {
     private String photo;
     private String type;
     private String userId;
-    String age;
-    String ethnicity;
-    String priority;
+    private String dateOfBirth;
+    private String ethnicity;
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public String getEthnicity() {
+        return ethnicity;
+    }
+
+    public void setEthnicity(String ethnicity) {
+        this.ethnicity = ethnicity;
+    }
+
 
 
     public String getUserId() {

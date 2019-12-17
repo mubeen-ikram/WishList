@@ -71,4 +71,20 @@
     <string name="firebaseChild">child</string>
     <string name="approvalDetails">Your application for registration has been forwarded to administration. Please wait for 7-10 working days. We would get back to you as soon as possible</string>
     <string name="emailSelect">You can write us to following email for further Enquiries</string>
+    <string name="enter_birthday_date">Enter Birthday Date</string>
+    <string name="child_ethnicity">Child ethnicity</string>
+    <string name="date_of_birth_error">Please Enter a Date of birth</string>
+    <string name="child_ethnicty_error">Please select child\'s Ethnicity</string>
+    <string name="approved">Approved</string>
+    <string name="completed">Completed</string>
+    <string name="declined">Declined</string>
+    <string name="admin_firebase">Admin</string>
+    <string name="orphanage_name">Orphanage Name</string>
+    <string name="orphan_age_mssing">Please select a OrphanAge</string>
+    <string name="decline">-1</string>
+    <string name="pending_homes">Pending Homes</string>
+    <string name="edit_child">Edit Child</string>
+    <string name="zero">0</string>
+    <string name="aproval_complete">Pending for Completion Approval</string>
+    <string name="edit_wish">Edit Wish</string>
 </resources>

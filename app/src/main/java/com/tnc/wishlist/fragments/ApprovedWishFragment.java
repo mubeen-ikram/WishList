@@ -23,6 +23,7 @@ public class ApprovedWishFragment extends Fragment {
     RecyclerView recyclerView;
     WishRecycleViewAdapter wishRecycleViewAdapter;
     ArrayList<Wishinformation> approvedWishes;
+
     public ApprovedWishFragment() {
         // Required empty public constructor
     }
@@ -34,32 +35,39 @@ public class ApprovedWishFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_approved_wish, container, false);
     }
+
     @Override
     public void onStart() {
         super.onStart();
         setValues();
-        recyclerView=getView().findViewById(R.id.recycleApprovedWishes);
+        recyclerView = getView().findViewById(R.id.recycleApprovedWishes);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        wishRecycleViewAdapter=new WishRecycleViewAdapter(getContext(),R.layout.wish_card_view,approvedWishes);
+        wishRecycleViewAdapter = new WishRecycleViewAdapter(getContext(), R.layout.wish_card_view, approvedWishes);
         recyclerView.setAdapter(wishRecycleViewAdapter);
     }
 
     private void setValues() {
-        approvedWishes=new ArrayList<>();
-        if(DataCentre.wishinformations.size()>0){
-            for(Wishinformation cWish:DataCentre.wishinformations){
-                if(!cWish.getCurrentCondition().equals(getString(R.string.Pending0))){
-                    for(childInformation user:DataCentre.childInformations){
-                        if(user.getUserId().equals(cWish.getOrphanId())&&user.getOrphanageId().equals(DataCentre.userId)){
-                            approvedWishes.add(cWish);
+        approvedWishes = new ArrayList<>();
+        if (DataCentre.wishinformations.size() > 0) {
+            for (Wishinformation cWish : DataCentre.wishinformations) {
+                if (cWish.getCurrentCondition().equals(getString(R.string.approved))||cWish.getCurrentCondition().equals(getString(R.string.aproval_complete))) {
+                    for (childInformation user : DataCentre.childInformations) {
+                        if (DataCentre.userType == 1) {
+                            if (user.getUserId().equals(cWish.getOrphanId()) && user.getOrphanageId().equals(DataCentre.userId)) {
+                                cWish.setWisherName(user.getName());
+                                approvedWishes.add(cWish);
+                            }
+                        } else {
+                            if(user.getUserId().equals(cWish.getOrphanId())) {
+                                cWish.setWisherName(user.getName());
+                                approvedWishes.add(cWish);
+                            }
                         }
-
                     }
                 }
             }
-        }
-        else{
+        } else {
         }
     }
 

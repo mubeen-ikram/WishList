@@ -24,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tnc.wishlist.ModelClasses.OrphanAgeHomeInformation;
 import com.tnc.wishlist.ModelClasses.childInformation;
 import com.tnc.wishlist.ModelClasses.Wishinformation;
 import com.tnc.wishlist.R;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase database;
     DatabaseReference childReference;
     DatabaseReference wishReference;
+    DatabaseReference orPhanageReference;
     FirebaseAuth mAuth;
     FloatingActionButton addChild, addWish;
     TextView wishText, personText;
@@ -50,13 +52,14 @@ public class MainActivity extends AppCompatActivity {
         DataCentre.userId = mAuth.getUid();
         childReference = database.getReference(getString(R.string.firebaseChild));
         wishReference = database.getReference(getString(R.string.wishesFirebaseReference));
+        orPhanageReference = database.getReference(getString(R.string.orphanagesFirebase));
         //Nulling predefined data
         DataCentre.orphanAgeHomeInformations = new ArrayList<>();
         childReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 DataCentre.childInformations = new ArrayList<>();
-                setWishListner();
+                setOrphanageListner();
                 for (DataSnapshot users : dataSnapshot.getChildren()) {
                     childInformation user = users.getValue(childInformation.class);
                     DataCentre.childInformations.add(user);
@@ -71,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         });
         setToolbar();
     }
+
     private void setToolbar() {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         myToolbar.setTitle(getString(R.string.app_name));
@@ -91,7 +95,10 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
+        if (DataCentre.userType == 2)
+            inflater.inflate(R.menu.main_v_menu, menu);
+        else
+            inflater.inflate(R.menu.main_menu, menu);
 
         // return true so that the menu pop up is opened
         return true;
@@ -99,16 +106,38 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
-        if(item.getItemId()==R.id.menuSignOut){
+        if (item.getItemId() == R.id.menuSignOut) {
             mAuth.signOut();
-            Intent toSignin=new Intent(MainActivity.this,SignInActivity.class);
+            Intent toSignin = new Intent(MainActivity.this, SignInActivity.class);
             startActivity(toSignin);
             MainActivity.this.finish();
+        }
+        if(item.getItemId()==R.id.menuSignUpV){
+            //TODO:Add Activity for adding voulunteer
         }
         return true;
     }
 
+    private void setOrphanageListner() {
+
+        orPhanageReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                DataCentre.orphanAgeHomeInformations = new ArrayList<>();
+                setWishListner();
+                for (DataSnapshot orphanages : dataSnapshot.getChildren()) {
+                    OrphanAgeHomeInformation orphanage = orphanages.getValue(OrphanAgeHomeInformation.class);
+                    DataCentre.orphanAgeHomeInformations.add(orphanage);
+                }
+//                continueWork();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
 
     private void setWishListner() {
@@ -145,14 +174,14 @@ public class MainActivity extends AppCompatActivity {
         addWish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this,AddWishActivity.class);
+                Intent intent = new Intent(MainActivity.this, AddWishActivity.class);
                 startActivity(intent);
             }
         });
         addChild.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent(MainActivity.this,AddChildActivity.class);
+                Intent intent = new Intent(MainActivity.this, AddChildActivity.class);
                 startActivity(intent);
             }
         });
@@ -164,15 +193,14 @@ public class MainActivity extends AppCompatActivity {
                     wishText.setVisibility(View.VISIBLE);
                     addChild.show();
                     addWish.show();
-                    isOpen=true;
+                    isOpen = true;
 
-                }
-                else{
+                } else {
                     personText.setVisibility(View.INVISIBLE);
                     wishText.setVisibility(View.INVISIBLE);
                     addChild.hide();
                     addWish.hide();
-                    isOpen=false;
+                    isOpen = false;
 
                 }
             }

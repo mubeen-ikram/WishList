@@ -171,16 +171,16 @@ public class SignUpActivity extends AppCompatActivity {
                     eTcontact.setError(getString(R.string.empty_input_error));
                     return;
                 }
-                if (filePath == null) {
-                    Toast.makeText(SignUpActivity.this, R.string.imageIconNotFound, Toast.LENGTH_LONG).show();
-                    return;
-                }
+
                 orphanAgeInfo.setContactNumber(contact);
                 orphanAgeInfo.setDescription(desc);
                 orphanAgeInfo.setEmail(email);
                 orphanAgeInfo.setName(username);
                 orphanAgeInfo.setStatus(getString(R.string.Pending0));
-                uploadImage();
+                if (filePath != null)
+                    uploadImage();
+                else
+                    continueRegistration();
             }
         });
     }

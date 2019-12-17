@@ -1,5 +1,7 @@
 package com.tnc.wishlist.fragments;
 
+import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,22 +12,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.tnc.wishlist.ModelClasses.childInformation;
+import com.tnc.wishlist.ModelClasses.OrphanAgeHomeInformation;
 import com.tnc.wishlist.R;
 import com.tnc.wishlist.adapters.ChildRecycleViewAdapter;
+import com.tnc.wishlist.adapters.HomesRecycleViewAdapter;
 import com.tnc.wishlist.staticClass.DataCentre;
 
 import java.util.ArrayList;
 
-public class ApprovedChildFragment extends Fragment {
-    ChildRecycleViewAdapter childRecycleViewAdapter;
+public class ApproveHomesFragment extends Fragment {
+    HomesRecycleViewAdapter homesRecycleViewAdapter;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-    ArrayList<childInformation> totalApprovedUser;
-
-    public ApprovedChildFragment() {
+    public ApproveHomesFragment() {
         // Required empty public constructor
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -37,37 +40,26 @@ public class ApprovedChildFragment extends Fragment {
 
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
 
     @Override
     public void onStart() {
         super.onStart();
-        setValues();
         layoutManager = new LinearLayoutManager(getContext());
         recyclerView = getView().findViewById(R.id.approvedChildRelative);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(layoutManager);
-        childRecycleViewAdapter = new ChildRecycleViewAdapter(getContext(), R.layout.child_card_view, totalApprovedUser);
-        recyclerView.setAdapter(childRecycleViewAdapter);
-    }
-
-    private void setValues() {
-        totalApprovedUser = new ArrayList<>();
-        if (DataCentre.childInformations.size() > 0) {
-            for (childInformation cUser : DataCentre.childInformations) {
-                if (DataCentre.userType == 1) {
-                    if (cUser.getOrphanageId().equals(DataCentre.userId) && cUser.getCondition().equals(getString(R.string.approved))) {
-                        totalApprovedUser.add(cUser);
-                    }
-                }
-                else{
-                    if (cUser.getCondition().equals(getString(R.string.approved))) {
-                        totalApprovedUser.add(cUser);
-                    }
-
-                }
-            }
-        } else {
+        ArrayList<OrphanAgeHomeInformation> homes=new ArrayList<>();
+        for(OrphanAgeHomeInformation home: DataCentre.orphanAgeHomeInformations){
+            if(home.getStatus().equals(getString(R.string.Pending0)))
+                homes.add(home);
         }
-    }
 
+        homesRecycleViewAdapter = new HomesRecycleViewAdapter(getContext(), R.layout.homes_approve_card,homes);
+        recyclerView.setAdapter(homesRecycleViewAdapter);
+    }
 }

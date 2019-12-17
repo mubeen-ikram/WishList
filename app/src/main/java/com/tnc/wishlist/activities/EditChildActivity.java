@@ -27,6 +27,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -56,7 +58,8 @@ import java.util.UUID;
 
 import static java.lang.Thread.sleep;
 
-public class AddChildActivity extends AppCompatActivity {
+public class EditChildActivity extends AppCompatActivity {
+
     EditText childName, childContact, childDescription, childBirthday;
     Spinner childEthnicity, childOrphanAge;
     Button sendForApprovebutton;
@@ -65,7 +68,7 @@ public class AddChildActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     DatabaseReference childReference;
     Uri filePath;
-    childInformation childInformation;
+    com.tnc.wishlist.ModelClasses.childInformation childInformation;
     String mCurrentPhotoPath;
     StorageReference storageReference;
     Calendar myCalendar;
@@ -79,14 +82,24 @@ public class AddChildActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_child);
         initializeVariable();
+        setValues();
         setSpinnerValues();
         setOnclickListner();
         setToolbar();
     }
 
+    private void setValues() {
+        childName.setText(childInformation.getName());
+        childBirthday.setText(childInformation.getDateOfBirth());
+        childContact.setText(childInformation.getContactNumber());
+        childDescription.setText(childInformation.getDescription());
+        Glide.with(this).load(childInformation.getPhoto()).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.profile_icon).into(childPic);
+
+    }
+
     private void setSpinnerValues() {
         List<String> childEth = Arrays.asList("Muslim", "Hindu", "Christian", "Atheist", "Others");
-        ArrayAdapter<String> childNameAdpater = new ArrayAdapter<String>(AddChildActivity.this,
+        ArrayAdapter<String> childNameAdpater = new ArrayAdapter<String>(EditChildActivity.this,
                 R.layout.spinner_layout, childEth);
         childEthnicity.setAdapter(childNameAdpater);
         if (DataCentre.userType != 1) {
@@ -97,7 +110,7 @@ public class AddChildActivity extends AppCompatActivity {
                     orphanageName.add(orphanAgeHomeInformation.getName());
                 }
             }
-            ArrayAdapter<String> orphanageNameAdpater = new ArrayAdapter<String>(AddChildActivity.this,
+            ArrayAdapter<String> orphanageNameAdpater = new ArrayAdapter<String>(EditChildActivity.this,
                     R.layout.spinner_layout, orphanageName);
             childOrphanAge.setAdapter(orphanageNameAdpater);
         }
@@ -135,37 +148,37 @@ public class AddChildActivity extends AppCompatActivity {
 //                    return;
 //                }
                 if (childName.getText().toString().length() < 1) {
-                    Toast.makeText(AddChildActivity.this, R.string.name_child_missing, Toast.LENGTH_LONG).show();
+                    Toast.makeText(EditChildActivity.this, R.string.name_child_missing, Toast.LENGTH_LONG).show();
 
                     childName.setError(getString(R.string.empty_input_error));
                     return;
                 }
                 if (childDescription.getText().toString().length() < 1) {
-                    Toast.makeText(AddChildActivity.this, R.string.descriptionnotfound, Toast.LENGTH_LONG).show();
+                    Toast.makeText(EditChildActivity.this, R.string.descriptionnotfound, Toast.LENGTH_LONG).show();
                     childDescription.setError(getString(R.string.empty_input_error));
                     return;
                 }
                 if (childContact.getText().toString().length() < 1) {
-                    Toast.makeText(AddChildActivity.this, R.string.enter_contact_number, Toast.LENGTH_LONG).show();
+                    Toast.makeText(EditChildActivity.this, R.string.enter_contact_number, Toast.LENGTH_LONG).show();
                     childContact.setError(getString(R.string.empty_input_error));
                     return;
                 }
                 if (childBirthday.getText().toString().length() < 1) {
-                    Toast.makeText(AddChildActivity.this, R.string.date_of_birth_error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(EditChildActivity.this, R.string.date_of_birth_error, Toast.LENGTH_LONG).show();
                     childBirthday.setError(getString(R.string.empty_input_error));
                     return;
                 }
                 if (childEthnicity.getSelectedItem().toString().length() < 1) {
-                    Toast.makeText(AddChildActivity.this, R.string.child_ethnicty_error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(EditChildActivity.this, R.string.child_ethnicty_error, Toast.LENGTH_LONG).show();
                     return;
                 }
                 if (DataCentre.userType != 1) {
                     if (childOrphanAge.getSelectedItem().toString().length() < 1) {
-                        Toast.makeText(AddChildActivity.this, R.string.orphan_age_mssing, Toast.LENGTH_LONG).show();
+                        Toast.makeText(EditChildActivity.this, R.string.orphan_age_mssing, Toast.LENGTH_LONG).show();
                         return;
                     }
-                    for (OrphanAgeHomeInformation orphanAgeHomeInformation:DataCentre.orphanAgeHomeInformations){
-                        if(orphanAgeHomeInformation.getName().equals(childOrphanAge.getSelectedItem().toString())){
+                    for (OrphanAgeHomeInformation orphanAgeHomeInformation : DataCentre.orphanAgeHomeInformations) {
+                        if (orphanAgeHomeInformation.getName().equals(childOrphanAge.getSelectedItem().toString())) {
                             childInformation.setOrphanageId(orphanAgeHomeInformation.getOrphanageId());
                             break;
                         }
@@ -181,7 +194,7 @@ public class AddChildActivity extends AppCompatActivity {
                 childInformation.setName(childName.getText().toString());
                 childInformation.setEthnicity(childEthnicity.getSelectedItem().toString());
                 childInformation.setDateOfBirth(childBirthday.getText().toString());
-                if (DataCentre.userType==1)
+                if (DataCentre.userType == 1)
                     childInformation.setOrphanageId(mAuth.getUid());
                 childInformation.setType(getString(R.string.OrphanO));
                 if (filePath != null)
@@ -212,7 +225,7 @@ public class AddChildActivity extends AppCompatActivity {
         childBirthday.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DatePickerDialog(AddChildActivity.this, date, myCalendar
+                new DatePickerDialog(EditChildActivity.this, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
@@ -222,7 +235,7 @@ public class AddChildActivity extends AppCompatActivity {
 
     private void workOnChildPic() {
         AlertDialog.Builder builder =
-                new AlertDialog.Builder(AddChildActivity.this);
+                new AlertDialog.Builder(EditChildActivity.this);
         builder.setTitle("Take Picture");
         builder.setMessage("Select the picture From");
 
@@ -246,8 +259,8 @@ public class AddChildActivity extends AppCompatActivity {
     }
 
     private void askPermissionForCamera() {
-        if (ActivityCompat.checkSelfPermission(AddChildActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(AddChildActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
+        if (ActivityCompat.checkSelfPermission(EditChildActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(EditChildActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
         } else {
             callForCamera();
         }
@@ -311,7 +324,7 @@ public class AddChildActivity extends AppCompatActivity {
         myCalendar = Calendar.getInstance();
         mAuth = FirebaseAuth.getInstance();
         childReference = database.getReference(getString(R.string.firebaseChild));
-        childInformation = new childInformation();
+        childInformation = DataCentre.selectedChild;
         storageReference = FirebaseStorage.getInstance().getReference();
     }
 
@@ -355,7 +368,7 @@ public class AddChildActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-                            Toast.makeText(AddChildActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditChildActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -369,11 +382,10 @@ public class AddChildActivity extends AppCompatActivity {
     }
 
     private void continueRegistration() {
-        childReference = childReference.push();
-        String key = childReference.getKey();
-        childInformation.setUserId(key);
-        childReference.setValue(childInformation);
-        Toast.makeText(AddChildActivity.this, R.string.child_sent_for_approval, Toast.LENGTH_LONG).show();
+//        childReference = childReference.push();
+//        String key = childReference.getKey();
+        childReference.child(childInformation.getUserId()).setValue(childInformation);
+        Toast.makeText(EditChildActivity.this, R.string.child_sent_for_approval, Toast.LENGTH_LONG).show();
         DataCentre.childInformations.add(childInformation);
         this.finish();
 
@@ -388,7 +400,9 @@ public class AddChildActivity extends AppCompatActivity {
 
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-                childPic.setImageBitmap(bitmap);
+//                childPic.setImageBitmap(bitmap);
+                Glide.with(this).load(bitmap).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.profile_icon).into(childPic);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -400,7 +414,7 @@ public class AddChildActivity extends AppCompatActivity {
             try {
                 filePath = Uri.fromFile(file);
                 bitmap = MediaStore.Images.Media
-                        .getBitmap(AddChildActivity.this.getContentResolver(), Uri.fromFile(file));
+                        .getBitmap(EditChildActivity.this.getContentResolver(), Uri.fromFile(file));
                 FileOutputStream outStream = new FileOutputStream(new File(String.valueOf(filePath)));
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream);
                 outStream.flush();
@@ -409,7 +423,8 @@ public class AddChildActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             if (bitmap != null) {
-                childPic.setImageBitmap(bitmap);
+                Glide.with(this).load(bitmap).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.profile_icon).into(childPic);
+//                childPic.setImageBitmap(bitmap);
             }
         }
     }
@@ -437,5 +452,5 @@ public class AddChildActivity extends AppCompatActivity {
             }
         }
     }
-
 }
+

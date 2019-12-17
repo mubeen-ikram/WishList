@@ -47,19 +47,20 @@
             android:padding="@dimen/editTextPadding"
             android:layout_weight="1"
             />
+
         <Button
-            style="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
-            android:text="@string/sign_upO"
-            android:textSize="@dimen/btnTextSize"
             android:id="@+id/signUpBtn"
-            android:textColor="@color/colorText"
+            style="@style/TextAppearance.AppCompat.Widget.Button.Borderless.Colored"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/EditTextMargin"
+            android:layout_weight="1"
             android:background="@drawable/rounded_button"
             android:padding="@dimen/editTextPadding"
-            android:layout_weight="1"
-            />
+            android:text="@string/sign_upO"
+            android:textColor="@color/colorText"
+            android:textSize="@dimen/btnTextSize"
+            tools:visibility="visible" />
     </LinearLayout>
     <Button
         android:layout_width="match_parent"

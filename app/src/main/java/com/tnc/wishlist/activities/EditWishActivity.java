@@ -26,6 +26,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -37,8 +39,8 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.tnc.wishlist.ModelClasses.OrphanAgeHomeInformation;
-import com.tnc.wishlist.ModelClasses.childInformation;
 import com.tnc.wishlist.ModelClasses.Wishinformation;
+import com.tnc.wishlist.ModelClasses.childInformation;
 import com.tnc.wishlist.R;
 import com.tnc.wishlist.staticClass.DataCentre;
 
@@ -52,7 +54,7 @@ import java.util.UUID;
 
 import static java.lang.Thread.sleep;
 
-public class AddWishActivity extends AppCompatActivity {
+public class EditWishActivity extends AppCompatActivity {
     ImageView wishPic;
     EditText wishName, wishPrice, wishDescription;
     Spinner wisherName,orphanAgeName;
@@ -74,9 +76,18 @@ public class AddWishActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_wish);
         initializeVariable();
+        setValues();
         populateSpinner();
         setOnClicklistner();
         setToolbar();
+    }
+
+    private void setValues() {
+        wishName.setText(wishinformation.getName());
+        wishPrice.setText(wishinformation.getPrice());
+        wishDescription.setText(wishinformation.getDescription());
+        Glide.with(this).load(wishinformation.getPhoto()).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.profile_icon).into(wishPic);
+
     }
 
     @Override
@@ -101,23 +112,23 @@ public class AddWishActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (wishName.getText().toString().length() < 1) {
-                    Toast.makeText(AddWishActivity.this, R.string.wishnamenotfound, Toast.LENGTH_LONG).show();
+                    Toast.makeText(EditWishActivity.this, R.string.wishnamenotfound, Toast.LENGTH_LONG).show();
 
                     wishName.setError(getString(R.string.empty_input_error));
                     return;
                 }
                 if (wishDescription.getText().toString().length() < 1) {
-                    Toast.makeText(AddWishActivity.this, R.string.descriptionnotfound, Toast.LENGTH_LONG).show();
+                    Toast.makeText(EditWishActivity.this, R.string.descriptionnotfound, Toast.LENGTH_LONG).show();
                     wishDescription.setError(getString(R.string.empty_input_error));
                     return;
                 }
                 if (wishPrice.getText().toString().length() < 1) {
-                    Toast.makeText(AddWishActivity.this, R.string.price_not_found, Toast.LENGTH_LONG).show();
+                    Toast.makeText(EditWishActivity.this, R.string.price_not_found, Toast.LENGTH_LONG).show();
                     wishPrice.setError(getString(R.string.empty_input_error));
                     return;
                 }
                 if (wisherName.getSelectedItem().toString().length() < 1) {
-                    Toast.makeText(AddWishActivity.this, R.string.wisher_name_not_found, Toast.LENGTH_LONG).show();
+                    Toast.makeText(EditWishActivity.this, R.string.wisher_name_not_found, Toast.LENGTH_LONG).show();
                     return;
                 }
                 if(DataCentre.userType>1) {
@@ -151,7 +162,7 @@ public class AddWishActivity extends AppCompatActivity {
 
     private void WorkOnWishPic() {
         AlertDialog.Builder builder =
-                new AlertDialog.Builder(AddWishActivity.this);
+                new AlertDialog.Builder(EditWishActivity.this);
         builder.setTitle("Take Picture");
         builder.setMessage("Select the picture From");
 
@@ -175,8 +186,8 @@ public class AddWishActivity extends AppCompatActivity {
     }
 
     private void askPermissionForCamera() {
-        if (ActivityCompat.checkSelfPermission(AddWishActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(AddWishActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
+        if (ActivityCompat.checkSelfPermission(EditWishActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(EditWishActivity.this, new String[]{Manifest.permission.CAMERA}, CAMERA_REQUEST);
         } else {
             callForCamera();
         }
@@ -241,7 +252,7 @@ public class AddWishActivity extends AppCompatActivity {
                             }
                             filePath = uri.getResult();
                             wishinformation.setPhoto(filePath.toString());
-//                            Toast.makeText(AddWishActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(EditWishActivity.this, "Image Uploaded", Toast.LENGTH_SHORT).show();
                             continueRegistration();
                         }
                     })
@@ -249,7 +260,7 @@ public class AddWishActivity extends AppCompatActivity {
                         @Override
                         public void onFailure(@NonNull Exception e) {
                             progressDialog.dismiss();
-//                            Toast.makeText(AddWishActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(EditWishActivity.this, "Failed " + e.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     })
                     .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
@@ -263,11 +274,11 @@ public class AddWishActivity extends AppCompatActivity {
     }
 
     private void continueRegistration() {
-        wishReference = wishReference.push();
-        String key = wishReference.getKey();
+//        wishReference = wishReference.push();
+        String key = wishinformation.getWishId();
         wishinformation.setWishId(key);
-        wishReference.setValue(wishinformation);
-        Toast.makeText(AddWishActivity.this, R.string.approval_sent, Toast.LENGTH_LONG).show();
+        wishReference.child(key).setValue(wishinformation);
+        Toast.makeText(EditWishActivity.this, R.string.approval_sent, Toast.LENGTH_LONG).show();
         DataCentre.wishinformations.add(wishinformation);
         this.finish();
     }
@@ -307,7 +318,7 @@ public class AddWishActivity extends AppCompatActivity {
                                     childName.add(childInformation.getName());
                                 }
                             }
-                            ArrayAdapter<String> childNameAdpater = new ArrayAdapter<String>(AddWishActivity.this,
+                            ArrayAdapter<String> childNameAdpater = new ArrayAdapter<String>(EditWishActivity.this,
                                     R.layout.spinner_layout, childName);
                             wisherName.setAdapter(childNameAdpater);
                             break;
@@ -326,7 +337,7 @@ public class AddWishActivity extends AppCompatActivity {
     }
 
     private void initializeVariable() {
-        wishinformation = new Wishinformation();
+        wishinformation = DataCentre.selectedWish;
         wishPic = findViewById(R.id.addWishPic);
         wishName = findViewById(R.id.addWishName);
         wishPrice = findViewById(R.id.addWishPrice);
@@ -367,7 +378,7 @@ public class AddWishActivity extends AppCompatActivity {
             try {
                 Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
                 // Log.d(TAG, String.valueOf(bitmap));
-                wishPic.setImageBitmap(bitmap);
+                Glide.with(this).load(bitmap).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.profile_icon).into(wishPic);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -379,7 +390,7 @@ public class AddWishActivity extends AppCompatActivity {
             try {
                 filePath = Uri.fromFile(file);
                 bitmap = MediaStore.Images.Media
-                        .getBitmap(AddWishActivity.this.getContentResolver(), Uri.fromFile(file));
+                        .getBitmap(EditWishActivity.this.getContentResolver(), Uri.fromFile(file));
                 FileOutputStream outStream = new FileOutputStream(new File(String.valueOf(filePath)));
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 50, outStream);
                 outStream.flush();
@@ -388,7 +399,8 @@ public class AddWishActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             if (bitmap != null) {
-                wishPic.setImageBitmap(bitmap);
+                Glide.with(this).load(bitmap).diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(R.drawable.profile_icon).into(wishPic);
+//                wishPic.setImageBitmap(bitmap);
             }
         }
     }

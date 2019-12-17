@@ -54,14 +54,22 @@ public class PendingChildFragment extends Fragment {
         totalPendingUser =new ArrayList<>();
         if(DataCentre.childInformations.size()>0){
             for(childInformation cUser:DataCentre.childInformations){
-                if(cUser.getOrphanageId().equals(DataCentre.userId)&&cUser.getCondition().equals(getString(R.string.Pending0))){
-                    totalPendingUser.add(cUser);
+                if(!cUser.getCondition().equals(getString(R.string.approved))) {
+                    Integer childLevel = Integer.parseInt(cUser.getCondition());
+                    if (DataCentre.userType == 1) {
+                        if (cUser.getOrphanageId().equals(DataCentre.userId) && (childLevel <= DataCentre.userType)&&childLevel>-1) {
+                            totalPendingUser.add(cUser);
+                        }
+                    } else {
+                        if (childLevel>-1) {
+                            totalPendingUser.add(cUser);
+                        }
+                    }
                 }
             }
         }
         else{
         }
     }
-
 
 }

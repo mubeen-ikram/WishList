@@ -23,15 +23,17 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.tnc.wishlist.ModelClasses.AdminInformation;
 import com.tnc.wishlist.ModelClasses.OrphanAgeHomeInformation;
 import com.tnc.wishlist.R;
+import com.tnc.wishlist.staticClass.DataCentre;
 
 public class SignInActivity extends AppCompatActivity {
     EditText signInEmail, signInPass;
     Button signInbtn, signUpBtn, forgotPassButton;
     private FirebaseAuth mAuth;
     FirebaseDatabase database;
-    DatabaseReference currentOrphanageRef;
+    DatabaseReference currentOrphanageRef, adminRef;
     ProgressDialog progressDialog;
 
     @Override
@@ -140,20 +142,41 @@ public class SignInActivity extends AppCompatActivity {
     private void updateUIAuth(FirebaseUser currentUser) {
         if (currentUser != null) {
             //call database and get its value
+
             currentOrphanageRef.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    OrphanAgeHomeInformation orphanAgeHomeInformation = dataSnapshot.getValue(OrphanAgeHomeInformation.class);
-                    if (orphanAgeHomeInformation.getStatus().equals(getString(R.string.Pending0))) {
-                        progressDialog.dismiss();
-                        Intent toWaitActivity = new Intent(SignInActivity.this, WaitingActivity.class);
-                        startActivity(toWaitActivity);
+                    if (dataSnapshot.exists()) {
+                        OrphanAgeHomeInformation orphanAgeHomeInformation = dataSnapshot.getValue(OrphanAgeHomeInformation.class);
+                        if (orphanAgeHomeInformation.getStatus().equals(getString(R.string.Pending0))) {
+                            progressDialog.dismiss();
+                            Intent toWaitActivity = new Intent(SignInActivity.this, WaitingActivity.class);
+                            startActivity(toWaitActivity);
 //                        SignInActivity.this.finish();
+                        } else {
+                            progressDialog.dismiss();
+                            DataCentre.userType=1;
+                            toMainAcitivty();
+                        }
                     } else {
-                        progressDialog.dismiss();
-                        Intent toMainActivity = new Intent(SignInActivity.this, MainActivity.class);
-                        startActivity(toMainActivity);
-                        SignInActivity.this.finish();
+                        adminRef.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                AdminInformation adminInformation=dataSnapshot.getValue(AdminInformation.class);
+                                if(adminInformation.getLevel()!=null&&adminInformation.getLevel().equals("2")){
+                                    DataCentre.userType=2;
+                                }
+                                else{
+                                    DataCentre.userType=0;
+                                }
+                                progressDialog.dismiss();
+                                toMainAcitivty();
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+                            }
+                        });
                     }
                 }
 
@@ -164,9 +187,15 @@ public class SignInActivity extends AppCompatActivity {
             });
 
         } else {
-                progressDialog.dismiss();
+            progressDialog.dismiss();
             //continue.com
         }
+    }
+
+    private void toMainAcitivty() {
+        Intent toMainActivity = new Intent(SignInActivity.this, MainActivity.class);
+        startActivity(toMainActivity);
+        SignInActivity.this.finish();
     }
 
     private void InitializeVariable() {
@@ -176,6 +205,7 @@ public class SignInActivity extends AppCompatActivity {
         signUpBtn = findViewById(R.id.signUpBtn);
         database = FirebaseDatabase.getInstance();
         currentOrphanageRef = database.getReference(getString(R.string.orphanagesFirebase));
+        adminRef = database.getReference(getString(R.string.admin_firebase));
         forgotPassButton = findViewById(R.id.forgotPassword);
         mAuth = FirebaseAuth.getInstance();
     }

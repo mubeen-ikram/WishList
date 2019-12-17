@@ -1,10 +1,14 @@
 package com.tnc.wishlist.ModelClasses;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
-public class Wishinformation {
+public class Wishinformation implements Serializable {
     private String currentCondition;
-    private HashMap<String,String> donor;
+//    private HashMap<String, DonarDonations> donor;
+    private ArrayList<DonarDonations> donor;
     private String name;
     private String orphanId;
     private String photo;
@@ -48,13 +52,6 @@ public class Wishinformation {
         this.currentCondition = currentCondition;
     }
 
-    public HashMap<String, String> getDonor() {
-        return donor;
-    }
-
-    public void setDonor(HashMap<String, String> donor) {
-        this.donor = donor;
-    }
 
     public String getName() {
         return name;

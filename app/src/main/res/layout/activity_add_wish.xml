@@ -33,6 +33,17 @@
             android:padding="@dimen/editTextPadding"
             tools:targetApi="o" />
 
+        <Spinner
+            android:id="@+id/add_orphanage_spinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/EditTextMargin"
+            android:background="@drawable/rounded_edit_text"
+            android:visibility="gone"
+            android:hint="@string/orphanage_name"
+            android:padding="@dimen/editTextPadding"
+            tools:targetApi="o" />
+
 
         <Spinner
             android:id="@+id/add_wisher_spinner"
